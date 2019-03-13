@@ -7,7 +7,7 @@ function initEmployee(db) {
   //rutas a implementar
   // metodo     ruta                     body
   /*
-      GET       /all
+     ** GET       /all
       GET       /byid/:id
       GET       /bycompany/:company
       GET       /byagerange/:min/:max
@@ -17,14 +17,31 @@ function initEmployee(db) {
       POST      /makeolder               age
    */
 
-  router.get('/all', (req, res, next) => {
-    /*
-    empModel.xyz( (err, docs)=>{
+router.get('/all', (req, res, next) => {  
+  empModel.getEmployees(
+    function(err, docs){
+      if(err) {
+        console.log(err);
+        return res.status(500).json({error:"Algo Paso"});
+      }
       return res.status(200).json(docs);
-    });
-    */
-  });// all
+  })
+});// all
 
+router.get('/byid/:id', (req, res, next) => {
+  empModel.getEmployeesById(req.params.id, (err, employeeDoc) =>{
+    if(err){
+      console.lod(err);
+      return res.status(500).json({"error":"Error al obetener datos"});
+    }else{
+      return res.status(200).json(employeeDoc);
+    }
+  });
+})
+
+router.get('/bycompany/:company', (req,res, next) => {
+  empModel.getEmployeesByCompany(req.params.id)
+})
   
   return router;
 }

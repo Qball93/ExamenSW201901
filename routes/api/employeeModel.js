@@ -4,22 +4,45 @@ function employeeModel(db){
   var lib = {};
   var empColl = db.collection('emps');
   lib.getEmployees = (handler)=>{
-    // implementar
-    // obtener todos los documentos
-    return handler(new Error("No Implementado"), null);
-  }
+    empColl.find({}).toArray(
+      (err, docs) => {
+        if(err){
+          handler(err,null);
+        }else{
+          handler(null,docs);
+        }
+      }
+    )
+    //return handler(new Error("No Implementado"), null);
+  };
 
   lib.getEmployeesById = (id, handler) => {
+    empColl.findOne({"_id":new ObjectID(id)},(err,doc)=>{
+      sent ={"email":doc.email,"phone":doc.phone,"name":doc.name,"age":doc.age};
+      if(err){
+        handler(err,null);
+      }else{
+        handler(null,sent);
+      }
+    })
     // implementar
     // Obtener un Documento solo mostrar
     // email, phone, name y age
-    return handler(new Error("No Implementado"), null);
+   // return handler(new Error("No Implementado"), null);
   }
 
   lib.getEmployeesByCompany = (company, handler) => {
     // implementar
     // solo mostrar name, email, company
-    return handler(new Error("No Implementado"), null);
+    empColl.findOne({"company":new ObjectID(company)},(err,doc)=>{
+      sent ={"email":doc.email,"phone":doc.phone,"name":doc.name,"age":doc.age};
+      if(err){
+        handler(err,null);
+      }else{
+        handler(null,sent);
+      }
+    })
+    //return handler(new Error("No Implementado"), null);
   }
 
   lib.getEmployeesByAgeRange = (ageLowLimit, ageHighLimit, handler) => {
