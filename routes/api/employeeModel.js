@@ -78,25 +78,59 @@ function employeeModel(db){
   }
 
   lib.getEmployeesByTag = (tag, handler) => {
+    var queryObject = {"tags": {"$in":Array.isArray(tag)? tag:[tag]}};
+    empColl.find(queryObject).toArray((err,doc) => {
+      if(err){
+        handler(err,null);
+      }else{
+        sent1 = []
+        doc.forEach((v) =>{
+        sent ={"email":v.email,"name":v.name,"tags":v.tags};
+        sent1.push(sent);
+        })
+        handler(null,sent1);
+      }
+    });//toArray
     //implementar
     // obtener todos los documentos que contenga 
     // al menos una vez el tag dentro del arreglo
     // tags
     // mostrar solo name, email, tags
-    return handler(new Error("No Implementado"), null);
+   // return handler(new Error("No Implementado"), null);
   }
 
-  lib.addEmployeeATag = ( tag, id, handler) => {
+  lib.addEmployeeATag = ( tags, id, handler) => {
+    var curatedTags = Array.isArray(tags)? tags: [tags];
+    var updateObject = {"$set":{"tags":curatedTags}};
+    empColl.updateOne({"_id":ObjectID(id)}, updateObject, (err, rsult) => {
+      if(err){
+        handler(err,null);
+      }else{
+        handler(null, rsult.result);
+      }
+    } );//updateOne
+  }
+
     //Implementar
     //Se requiere agregar a un documento un nuevo tag
     // $push
-    return handler(new Error("No Implementado"), null);
-  }
+    //return handler(new Error("No Implementado"), null);
+  
 
-  lib.removeEmployee = (id, handler) => {
+  lib.removeEmployee = (Id, handler) => {
+    empColl.deleteOne({"_id":ObjectID(Id)}, (err, rslt)=>{
+      if(err){
+        console.log(err);
+        handler(er,null);
+      }else {
+        handler(null, rslt.result);
+      }
+    });//deleteOne
+
+
     //Implementar
     //Se requiere eliminar un documento de la colección
-    return handler(new Error("No Implementado"), null);
+    //return handler(new Error("No Implementado"), null);
   }
 
   lib.increaseAgeToAll = (ageDelta, handler) => {

@@ -51,7 +51,7 @@ router.get('/bycompany/:company', (req,res, next) => {
 })
 
 router.get('/bytags/:tag', (req, res, next)=>{
-  mongoModel.getEmployeesByTag((req.params.tag || '').split('_'), (err, docs)=>{
+  empModel.getEmployeesByTag((req.params.tag || '').split('_'), (err, docs)=>{
     if(err){
       console.log(err);
       return res.status(500).json({"error":"error al obtener datos"});
@@ -60,7 +60,27 @@ router.get('/bytags/:tag', (req, res, next)=>{
     }
   } ); //searchByTag
 });// by tag
+
+router.post('/addtag/:id', (req, res, next)=>{
+  empModel.addEmployeeATag(req.body.tag,req.params.id, (err, rsult)=>{
+    if(err){
+      console.log(err);
+      return res.status(500).json({"error":"No se puede actualizar la tag"});
+    }
+    return res.status(200).json(rsult);
+  });// end addTagsToThing
+});// addtags
   
+
+router.delete('/delete/:id', function(req, res, next){
+  var employeeId = req.params.id;
+  empModel.removeEmployee(employeeId, (err,result) =>{
+    if(err){
+      return res.status(500).json({"error":"No se pudo eliminar"})
+    }
+    return res.status(200).json(result);
+  })
+})
   return router;
 }
 
