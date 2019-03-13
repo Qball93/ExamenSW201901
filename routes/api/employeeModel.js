@@ -34,24 +34,47 @@ function employeeModel(db){
   lib.getEmployeesByCompany = (company, handler) => {
     // implementar
     // solo mostrar name, email, company
-    empColl.findOne({"company":new ObjectID(company)},(err,doc)=>{
-      sent ={"email":doc.email,"phone":doc.phone,"name":doc.name,"age":doc.age};
+    var queryObject = {"company":company};
+    console.log(company);
+    empColl.find(queryObject).toArray((err,doc)=>{
+
+      
+
+
       if(err){
         handler(err,null);
       }else{
-        handler(null,sent);
+        sent1 = []
+        doc.forEach((v) =>{
+        sent ={"email":v.email,"company":v.company,"name":v.name};
+        sent1.push(sent);
+        })
+        handler(null,sent1);
       }
     })
     //return handler(new Error("No Implementado"), null);
   }
 
   lib.getEmployeesByAgeRange = (ageLowLimit, ageHighLimit, handler) => {
+
+    empColl.find({"age":{$gt:parseInt(ageLowLimit),$lt:parseInt(ageHighLimit)}}).toArray((err,doc) => {
+      if(err){
+        handler(err,null);
+      }else{
+        sent1 = []
+        doc.forEach((v) =>{
+        sent ={"email":v.email,"name":v.name,"age":v.age};
+        sent1.push(sent);
+        })
+        handler(null,sent1);
+      }
+    });
     //implementar
     // Mostrar todos los documento incluyendo los extremos
     // que esten entre las edades indicadas por los parametros
     // ageLowLimit y ageHighLimit
     // solo mostrar name, age, email
-    return handler(new Error("No Implementado"), null);
+    //return handler(new Error("No Implementado"+ageLowLimit+ageHighLimit), null);
   }
 
   lib.getEmployeesByTag = (tag, handler) => {

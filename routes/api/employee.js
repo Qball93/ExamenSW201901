@@ -40,8 +40,26 @@ router.get('/byid/:id', (req, res, next) => {
 })
 
 router.get('/bycompany/:company', (req,res, next) => {
-  empModel.getEmployeesByCompany(req.params.id)
+  empModel.getEmployeesByCompany(req.params.company, (err, employeeDoc) =>{
+    if(err){
+      console.log(err);
+      return res.status(500).json({"error":"Error al obtener datos"});
+    }else{
+      return res.status(200).json(employeeDoc);
+    }
+  })
 })
+
+router.get('/bytags/:tag', (req, res, next)=>{
+  mongoModel.getEmployeesByTag((req.params.tag || '').split('_'), (err, docs)=>{
+    if(err){
+      console.log(err);
+      return res.status(500).json({"error":"error al obtener datos"});
+    }else{
+      return res.status(200).json(docs);
+    }
+  } ); //searchByTag
+});// by tag
   
   return router;
 }
